@@ -1,6 +1,6 @@
-# POC 서버 모니터 — 정적 뷰어 (status_site)
+# POTC Server Monitor — 정적 뷰어 (status_site)
 
-폰(Safari)에서 POC 게임서버의 **현재 동접(CCU)·FPS·상태**를 읽기전용으로 보는 정적 웹앱.
+폰(Safari)에서 POTC 게임서버의 **현재 동접(CCU)·FPS·상태**를 읽기전용으로 보는 정적 웹앱.
 의존성 없음(vanilla JS). 같은 출처의 `status.json` 하나만 읽어 렌더한다.
 
 ## 구성

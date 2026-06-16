@@ -1,5 +1,5 @@
 "use strict";
-/* POC 서버 모니터 - read-only static viewer.
+/* POTC Server Monitor - read-only static viewer.
    Fetches ./status.json (written by the bridge: monitor_client.py --emit), renders a
    sortable / pinnable / filterable list. No dependencies; works on GitHub Pages or any
    static host that serves status.json same-origin. */

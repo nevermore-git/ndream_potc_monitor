@@ -1,6 +1,6 @@
 {
-  "name": "POC 서버 모니터",
-  "short_name": "POC 모니터",
+  "name": "POTC Server Monitor",
+  "short_name": "POTC Monitor",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
