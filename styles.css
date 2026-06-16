@@ -55,7 +55,7 @@ body {
 /* ---- row grid (header + data share these columns) ---- */
 .row {
   display: grid;
-  grid-template-columns: 26px minmax(0,1fr) 46px 40px 44px 48px;
+  grid-template-columns: 24px minmax(92px,1fr) 48px 44px 48px 54px;
   align-items: center; gap: 6px;
   padding: 9px 12px; border-bottom: 1px solid var(--line);
 }
@@ -67,7 +67,7 @@ body {
 .c-pin.on { color: var(--pin); }
 .c-name { min-width: 0; }
 .c-name .num { font-weight: 700; }
-.c-name .chip { margin-left: 7px; }
+.c-name .chip { margin-left: 6px; font-size: 10px; padding: 2px 6px; }
 .c-type { color: var(--muted); font-size: 12px; }
 .c-ccu { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
 .c-fps, .c-cpu, .c-mem { text-align: right; font-variant-numeric: tabular-nums; }
