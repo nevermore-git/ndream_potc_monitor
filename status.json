@@ -1,641 +1,641 @@
 {
-  "updated_at": "2026-06-16 13:28:10",
-  "updated_epoch": 1781584090,
+  "updated_at": "2026-06-16 13:44:13",
+  "updated_epoch": 1781585053,
   "source": "live",
   "summary": {
     "server_count": 63,
-    "total_ccu": 2493
+    "total_ccu": 2547
   },
   "servers": [
     {
       "num": "1M312",
       "name": "(1M312) GAME_8000",
       "type": "GS",
-      "ccu": 27,
-      "fps": 121,
+      "ccu": 32,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 109,
+      "fps_avg": 117,
+      "fps_max": 120
     },
     {
       "num": "1M365",
       "name": "(1M365) GAME_8400",
       "type": "GS",
-      "ccu": 44,
-      "fps": 115,
+      "ccu": 40,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 116,
+      "fps_avg": 119,
+      "fps_max": 123
     },
     {
       "num": "1M384",
       "name": "(1M384) GAME_8000",
       "type": "GS",
-      "ccu": 57,
-      "fps": 79,
+      "ccu": 49,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 102,
+      "fps_avg": 106,
+      "fps_max": 108
     },
     {
       "num": "1M389",
       "name": "(1M389) GAME_8100",
       "type": "GS",
       "ccu": 20,
-      "fps": 101,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 120,
+      "fps_avg": 123,
+      "fps_max": 126
     },
     {
       "num": "1M411",
       "name": "(1M411) GAME_8000",
       "type": "GS",
       "ccu": 153,
-      "fps": 28,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 5
+      "fps_min": 18,
+      "fps_avg": 31,
+      "fps_max": 51
     },
     {
       "num": "1M436",
       "name": "(1M436) GAME_8300",
       "type": "GS",
-      "ccu": 30,
-      "fps": 116,
+      "ccu": 32,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 116,
+      "fps_avg": 119,
+      "fps_max": 123
     },
     {
       "num": "1M440",
       "name": "(1M440) GAME_8200",
       "type": "GS",
       "ccu": 50,
-      "fps": 103,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 98,
+      "fps_avg": 103,
+      "fps_max": 109
     },
     {
       "num": "1M451",
       "name": "(1M451) GAME_8000",
       "type": "GS",
-      "ccu": 91,
-      "fps": 72,
+      "ccu": 95,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 48,
+      "fps_avg": 74,
+      "fps_max": 84
     },
     {
       "num": "1M452",
       "name": "(1M452) GAME_8000",
       "type": "GS",
-      "ccu": 62,
-      "fps": 98,
+      "ccu": 67,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 66,
+      "fps_avg": 92,
+      "fps_max": 101
     },
     {
       "num": "1M453",
       "name": "(1M453) GAME_8100",
       "type": "GS",
-      "ccu": 60,
-      "fps": 97,
+      "ccu": 61,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 61,
+      "fps_avg": 88,
+      "fps_max": 100
     },
     {
       "num": "1M454",
       "name": "(1M454) GAME_8100",
       "type": "GS",
-      "ccu": 193,
-      "fps": 9,
+      "ccu": 188,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 5
+      "fps_min": 1,
+      "fps_avg": 7,
+      "fps_max": 24
     },
     {
       "num": "1M455",
       "name": "(1M455) GAME_8200",
       "type": "GS",
-      "ccu": 39,
-      "fps": 110,
+      "ccu": 41,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 108,
+      "fps_avg": 109,
+      "fps_max": 112
     },
     {
       "num": "1M456",
       "name": "(1M456) GAME_8000",
       "type": "GS",
-      "ccu": 47,
-      "fps": 101,
+      "ccu": 42,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 101,
+      "fps_avg": 106,
+      "fps_max": 108
     },
     {
       "num": "1M457",
       "name": "(1M457) GAME_8100",
       "type": "GS",
-      "ccu": 72,
-      "fps": 103,
+      "ccu": 77,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 77,
+      "fps_avg": 102,
+      "fps_max": 111
     },
     {
       "num": "1M458",
       "name": "(1M458) GAME_8100",
       "type": "GS",
-      "ccu": 49,
-      "fps": 99,
+      "ccu": 56,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 96,
+      "fps_avg": 108,
+      "fps_max": 118
     },
     {
       "num": "1M459",
       "name": "(1M459) GAME_8000",
       "type": "GS",
-      "ccu": 29,
-      "fps": 120,
+      "ccu": 33,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 106,
+      "fps_avg": 118,
+      "fps_max": 123
     },
     {
       "num": "1M462",
       "name": "(1M462) GAME_8100",
       "type": "GS",
-      "ccu": 35,
-      "fps": 111,
+      "ccu": 28,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 110,
+      "fps_avg": 116,
+      "fps_max": 120
     },
     {
       "num": "1M486",
       "name": "(1M486) GAME_8100",
       "type": "GS",
-      "ccu": 64,
-      "fps": 103,
+      "ccu": 63,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 92,
+      "fps_avg": 98,
+      "fps_max": 102
     },
     {
       "num": "1M487",
       "name": "(1M487) GAME_8100",
       "type": "GS",
-      "ccu": 38,
-      "fps": 104,
+      "ccu": 37,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 102,
+      "fps_avg": 108,
+      "fps_max": 112
     },
     {
       "num": "1M488",
       "name": "(1M488) GAME_8300",
       "type": "GS",
-      "ccu": 60,
-      "fps": 108,
+      "ccu": 62,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 84,
+      "fps_avg": 105,
+      "fps_max": 113
     },
     {
       "num": "1M489",
       "name": "(1M489) GAME_8000",
       "type": "GS",
-      "ccu": 59,
-      "fps": 111,
+      "ccu": 55,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 100,
+      "fps_avg": 110,
+      "fps_max": 115
     },
     {
       "num": "1M490",
       "name": "(1M490) GAME_8000",
       "type": "GS",
-      "ccu": 41,
-      "fps": 114,
+      "ccu": 46,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 106,
+      "fps_avg": 114,
+      "fps_max": 118
     },
     {
       "num": "1M491",
       "name": "(1M491) GAME_8300",
       "type": "GS",
       "ccu": 20,
-      "fps": 135,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 130,
+      "fps_avg": 134,
+      "fps_max": 136
     },
     {
       "num": "1M492",
       "name": "(1M492) GAME_8400",
       "type": "GS",
       "ccu": 9,
-      "fps": 135,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 134,
+      "fps_avg": 136,
+      "fps_max": 137
     },
     {
       "num": "1M493",
       "name": "(1M493) GAME_8000",
       "type": "GS",
-      "ccu": 19,
-      "fps": 129,
+      "ccu": 17,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 128,
+      "fps_avg": 130,
+      "fps_max": 132
     },
     {
       "num": "1M494",
       "name": "(1M494) GAME_8200",
       "type": "GS",
-      "ccu": 24,
-      "fps": 133,
+      "ccu": 23,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 12
+      "fps_min": 132,
+      "fps_avg": 135,
+      "fps_max": 137
     },
     {
       "num": "1M495",
       "name": "(1M495) GAME_8100",
       "type": "GS",
-      "ccu": 19,
-      "fps": 134,
+      "ccu": 21,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 135,
+      "fps_avg": 136,
+      "fps_max": 137
     },
     {
       "num": "1M496",
       "name": "(1M496) GAME_8100",
       "type": "GS",
-      "ccu": 39,
-      "fps": 125,
+      "ccu": 40,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 122,
+      "fps_avg": 125,
+      "fps_max": 130
     },
     {
       "num": "1M497",
       "name": "(1M497) GAME_8100",
       "type": "GS",
-      "ccu": 23,
-      "fps": 133,
+      "ccu": 24,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 98,
+      "fps_avg": 127,
+      "fps_max": 135
     },
     {
       "num": "1M498",
       "name": "(1M498) GAME_8000",
       "type": "GS",
-      "ccu": 12,
-      "fps": 138,
+      "ccu": 10,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 133,
+      "fps_avg": 137,
+      "fps_max": 139
     },
     {
       "num": "1M68",
       "name": "(1M68) GAME_8000",
       "type": "GS",
-      "ccu": 21,
-      "fps": 86,
+      "ccu": 22,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 88,
+      "fps_avg": 106,
+      "fps_max": 115
     },
     {
       "num": "1M78",
       "name": "(1M78) GAME_8100",
       "type": "GS",
-      "ccu": 46,
-      "fps": 101,
+      "ccu": 52,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 96,
+      "fps_avg": 102,
+      "fps_max": 106
     },
     {
       "num": "1M81",
       "name": "(1M81) GAME_8400",
       "type": "GS",
-      "ccu": 45,
-      "fps": 90,
+      "ccu": 47,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 80,
+      "fps_avg": 87,
+      "fps_max": 90
     },
     {
       "num": "1M83",
       "name": "(1M83) GAME_8200",
       "type": "GS",
-      "ccu": 70,
-      "fps": 111,
+      "ccu": 59,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 106,
+      "fps_avg": 110,
+      "fps_max": 116
     },
     {
       "num": "1M85",
       "name": "(1M85) GAME_8000",
       "type": "GS",
-      "ccu": 92,
-      "fps": 57,
+      "ccu": 98,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 1,
+      "fps_avg": 48,
+      "fps_max": 69
     },
     {
       "num": "1M86",
       "name": "(1M86) GAME_8100",
       "type": "GS",
-      "ccu": 181,
-      "fps": 31,
+      "ccu": 201,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 1,
+      "fps_avg": 34,
+      "fps_max": 52
     },
     {
       "num": "1M87",
       "name": "(1M87) GAME_8000",
       "type": "GS",
-      "ccu": 81,
-      "fps": 96,
+      "ccu": 77,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 50,
+      "fps_avg": 89,
+      "fps_max": 99
     },
     {
       "num": "1M88",
       "name": "(1M88) GAME_8100",
       "type": "GS",
-      "ccu": 85,
-      "fps": 70,
+      "ccu": 80,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 6
+      "fps_min": 28,
+      "fps_avg": 62,
+      "fps_max": 74
     },
     {
       "num": "L472",
       "name": "(L472) GAME_8200",
       "type": "GS",
-      "ccu": 3,
-      "fps": 140,
+      "ccu": 4,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 137,
+      "fps_avg": 139,
+      "fps_max": 140
     },
     {
       "num": "L473",
       "name": "(L473) GAME_8300",
       "type": "GS",
-      "ccu": 1,
-      "fps": 138,
+      "ccu": 2,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 136,
+      "fps_avg": 139,
+      "fps_max": 140
     },
     {
       "num": "L474",
       "name": "(L474) GAME_8000",
       "type": "GS",
-      "ccu": 1,
-      "fps": 139,
+      "ccu": 2,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 137,
+      "fps_avg": 139,
+      "fps_max": 141
     },
     {
       "num": "L475",
       "name": "(L475) GAME_8100",
       "type": "GS",
       "ccu": 4,
-      "fps": 141,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 12
+      "fps_min": 140,
+      "fps_avg": 140,
+      "fps_max": 141
     },
     {
       "num": "L476",
       "name": "(L476) GAME_8200",
       "type": "GS",
       "ccu": 2,
-      "fps": 141,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 137,
+      "fps_avg": 141,
+      "fps_max": 142
     },
     {
       "num": "L477",
       "name": "(L477) GAME_8200",
       "type": "GS",
-      "ccu": 14,
-      "fps": 137,
+      "ccu": 8,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 134,
+      "fps_avg": 136,
+      "fps_max": 138
     },
     {
       "num": "L478",
       "name": "(L478) GAME_8200",
       "type": "GS",
-      "ccu": 5,
-      "fps": 138,
+      "ccu": 6,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 135,
+      "fps_avg": 138,
+      "fps_max": 140
     },
     {
       "num": "L479",
       "name": "(L479) GAME_8300",
       "type": "GS",
-      "ccu": 7,
-      "fps": 139,
+      "ccu": 6,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 138,
+      "fps_avg": 140,
+      "fps_max": 140
     },
     {
       "num": "L480",
       "name": "(L480) GAME_8300",
       "type": "GS",
       "ccu": 2,
-      "fps": 142,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 138,
+      "fps_avg": 140,
+      "fps_max": 142
     },
     {
       "num": "L481",
       "name": "(L481) GAME_8200",
       "type": "GS",
       "ccu": 6,
-      "fps": 137,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 138,
+      "fps_avg": 139,
+      "fps_max": 141
     },
     {
       "num": "L482",
       "name": "(L482) GAME_8300",
       "type": "GS",
-      "ccu": 6,
-      "fps": 138,
+      "ccu": 7,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 137,
+      "fps_avg": 139,
+      "fps_max": 140
     },
     {
       "num": "L483",
       "name": "(L483) GAME_8000",
       "type": "GS",
-      "ccu": 8,
-      "fps": 139,
+      "ccu": 6,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 133,
+      "fps_avg": 135,
+      "fps_max": 138
     },
     {
       "num": "L484",
       "name": "(L484) GAME_8300",
       "type": "GS",
-      "ccu": 9,
-      "fps": 137,
+      "ccu": 16,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 12
+      "fps_min": 135,
+      "fps_avg": 137,
+      "fps_max": 139
     },
     {
       "num": "L485",
       "name": "(L485) GAME_8300",
       "type": "GS",
-      "ccu": 12,
-      "fps": 137,
+      "ccu": 15,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 134,
+      "fps_avg": 136,
+      "fps_max": 137
     },
     {
       "num": "L499",
       "name": "(L499) GAME_8400",
       "type": "GS",
-      "ccu": 16,
-      "fps": 135,
+      "ccu": 15,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 7
+      "fps_min": 132,
+      "fps_avg": 134,
+      "fps_max": 136
     },
     {
       "num": "L500",
       "name": "(L500) GAME_8200",
       "type": "GS",
       "ccu": 25,
-      "fps": 128,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 128,
+      "fps_avg": 129,
+      "fps_max": 130
     },
     {
       "num": "L501",
       "name": "(L501) GAME_8000",
       "type": "GS",
       "ccu": 13,
-      "fps": 132,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 125,
+      "fps_avg": 129,
+      "fps_max": 131
     },
     {
       "num": "L502",
       "name": "(L502) GAME_8100",
       "type": "GS",
-      "ccu": 16,
-      "fps": 132,
+      "ccu": 17,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 128,
+      "fps_avg": 131,
+      "fps_max": 132
     },
     {
       "num": "L503",
       "name": "(L503) GAME_8100",
       "type": "GS",
-      "ccu": 16,
-      "fps": 130,
+      "ccu": 14,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 128,
+      "fps_avg": 131,
+      "fps_max": 132
     },
     {
       "num": "L504",
       "name": "(L504) GAME_8200",
       "type": "GS",
-      "ccu": 31,
-      "fps": 127,
+      "ccu": 36,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 124,
+      "fps_avg": 127,
+      "fps_max": 129
     },
     {
       "num": "L505",
       "name": "(L505) GAME_8200",
       "type": "GS",
-      "ccu": 31,
-      "fps": 117,
+      "ccu": 40,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 110,
+      "fps_avg": 117,
+      "fps_max": 121
     },
     {
       "num": "L506",
       "name": "(L506) GAME_8200",
       "type": "GS",
-      "ccu": 44,
-      "fps": 108,
+      "ccu": 50,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 10
+      "fps_min": 99,
+      "fps_avg": 106,
+      "fps_max": 109
     },
     {
       "num": "L507",
       "name": "(L507) GAME_8100",
       "type": "GS",
-      "ccu": 78,
-      "fps": 105,
+      "ccu": 82,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 11
+      "fps_min": 97,
+      "fps_avg": 106,
+      "fps_max": 109
     },
     {
       "num": "L700",
       "name": "(L700) GAME_8000",
       "type": "GS",
-      "ccu": 2,
-      "fps": 142,
+      "ccu": 3,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 13
+      "fps_min": 140,
+      "fps_avg": 141,
+      "fps_max": 143
     },
     {
       "num": "L750",
       "name": "(L750) GAME_8300",
       "type": "GS",
-      "ccu": 35,
-      "fps": 137,
+      "ccu": 39,
       "condition": "OPEN",
-      "cpu": null,
-      "mem": 13
+      "fps_min": 129,
+      "fps_avg": 135,
+      "fps_max": 139
     }
   ]
 }

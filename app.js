@@ -11,7 +11,7 @@ const PIN_KEY = "poc.pinned.v1";
 const state = {
   data: null,
   sortKey: "num",                  // num | ccu | fps
-  sortDir: { num: 1, ccu: -1, fps: -1 },
+  sortDir: { num: 1, ccu: -1, fps_avg: -1 },
   filter: "",
   pinned: loadPinned(),
 };
@@ -95,16 +95,16 @@ function rowEl(s, pinned) {
 
   const name = document.createElement("span");
   name.className = "c-name";
-  name.innerHTML = `<span class="num"></span><span class="chip ${condClass(s.condition)}"></span>`;
-  name.querySelector(".num").textContent = dispNum(s.num);   // number only; status chip follows
-  name.querySelector(".chip").textContent = s.condition || "?";
+  name.innerHTML = `<span class="dot ${condClass(s.condition)}"></span><span class="num"></span>`;
+  name.querySelector(".num").textContent = dispNum(s.num);   // colored status dot, then number
+  name.querySelector(".dot").title = s.condition || "?";     // hover shows full status text
 
   const ccu = el_span("c-ccu", s.ccu == null ? "–" : s.ccu.toLocaleString());
-  const fps = el_span("c-fps " + fpsClass(s.fps), s.fps == null ? "–" : s.fps);
-  const cpu = el_span("c-cpu " + usageClass(s.cpu), s.cpu == null ? "–" : s.cpu + "%");
-  const mem = el_span("c-mem " + usageClass(s.mem), s.mem == null ? "–" : s.mem + "%");
+  const mn = el_span("c-min " + fpsClass(s.fps_min), s.fps_min == null ? "–" : s.fps_min);
+  const av = el_span("c-avg " + fpsClass(s.fps_avg), s.fps_avg == null ? "–" : s.fps_avg);
+  const mx = el_span("c-max " + fpsClass(s.fps_max), s.fps_max == null ? "–" : s.fps_max);
 
-  el.append(star, name, ccu, fps, cpu, mem);
+  el.append(star, name, ccu, mn, av, mx);
   return el;
 }
 function el_span(cls, text) { const e = document.createElement("span"); e.className = cls; e.textContent = text; return e; }
