@@ -51,6 +51,15 @@ body {
 }
 .sortbtn.active { color: var(--fg); border-color: var(--accent); background: #1c2746; }
 .sortbtn .dir { font-size: 10px; opacity: .8; }
+.iconbtn {
+  flex: 0 0 auto; background: var(--bg2); border: 1px solid var(--line); color: var(--muted);
+  border-radius: 9px; padding: 9px 12px; font-size: 16px; line-height: 1; font-weight: 700;
+}
+.iconbtn:active { background: #1c2746; color: var(--fg); }
+.iconbtn[disabled] { opacity: .85; }
+.iconbtn .ico { display: inline-block; }
+.iconbtn.spin .ico { animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ---- row grid (header + data share these columns) ---- */
 .row {

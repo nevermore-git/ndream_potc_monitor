@@ -6,6 +6,7 @@
 
 const REFRESH_MS = 90000;          // unauthenticated GitHub API = 60 req/hr -> poll every 90s (40/hr)
 const STALE_SEC = 240;             // older than this -> flag the timestamp (bridge likely stopped)
+const MIN_GAP_MS = 8000;           // min gap between event-driven refetches (one resume fires several events)
 const PIN_KEY = "poc.pinned.v1";
 
 const state = {
@@ -14,6 +15,8 @@ const state = {
   sortDir: { num: 1, ccu: -1, fps_avg: -1 },
   filter: "",
   pinned: loadPinned(),
+  fetching: false,                 // single-flight guard (no overlapping requests)
+  lastFetch: 0,                    // epoch ms of the last fetch start (debounce source)
 };
 
 function loadPinned() {
@@ -141,7 +144,21 @@ function repoInfo() {
   return (m && repo) ? { owner: m[1], repo } : null;   // null => local preview (mock)
 }
 
-async function fetchStatus() {
+function setRefreshing(on) {
+  const btn = document.getElementById("refresh");
+  if (btn) { btn.classList.toggle("spin", on); btn.disabled = on; }
+}
+
+/* force=true  -> manual button / first load / reconnect: bypass the debounce (still single-flight).
+   force=false -> interval + resume events: skip if a fetch is in flight or one started <MIN_GAP_MS ago.
+   A single iOS resume can fire visibilitychange + pageshow + focus together; the debounce collapses
+   that burst into one request so the unauthenticated 60 req/hr budget holds. */
+async function fetchStatus(force) {
+  if (state.fetching) return;
+  if (!force && Date.now() - state.lastFetch < MIN_GAP_MS) return;
+  state.fetching = true;
+  state.lastFetch = Date.now();
+  setRefreshing(true);
   const repo = repoInfo();
   const url = repo
     ? `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/status.json?ref=data`
@@ -151,7 +168,11 @@ async function fetchStatus() {
     : { cache: "no-store" };
   try {
     const r = await fetch(url, opts);
-    if (!r.ok) throw new Error("HTTP " + r.status);
+    if (!r.ok) {
+      if (r.status === 403 && r.headers.get("X-RateLimit-Remaining") === "0")
+        throw new Error("요청 한도 초과 — 잠시 후 자동 갱신");
+      throw new Error("HTTP " + r.status);
+    }
     state.data = JSON.parse(await r.text());
     document.getElementById("banner").hidden = true;
     render();
@@ -159,6 +180,9 @@ async function fetchStatus() {
     const b = document.getElementById("banner");
     b.hidden = false;
     b.textContent = "데이터 로드 실패: " + e.message + " (자동 재시도 중)";
+  } finally {
+    state.fetching = false;
+    setRefreshing(false);
   }
 }
 
@@ -181,8 +205,17 @@ document.getElementById("sorts").addEventListener("click", e => {
   render();
 });
 document.getElementById("filter").addEventListener("input", e => { state.filter = e.target.value; render(); });
-document.addEventListener("visibilitychange", () => { if (!document.hidden) fetchStatus(); });
+document.getElementById("refresh").addEventListener("click", () => fetchStatus(true));
 
-setInterval(fetchStatus, REFRESH_MS);
+/* Refetch on every path back to the foreground. iOS Safari freezes timers while the PWA/tab is
+   backgrounded or the phone is locked, so the 90s interval is suspended and data is stale on resume.
+   visibilitychange = tab switch / unlock, pageshow = bfcache restore (back-forward, app resume),
+   focus = window focus, online = network reconnect. MIN_GAP_MS dedupes the resume burst. */
+document.addEventListener("visibilitychange", () => { if (!document.hidden) fetchStatus(false); });
+window.addEventListener("pageshow", () => fetchStatus(false));
+window.addEventListener("focus", () => fetchStatus(false));
+window.addEventListener("online", () => fetchStatus(true));
+
+setInterval(() => fetchStatus(false), REFRESH_MS);
 setInterval(renderUpdated, 1000);
-fetchStatus();
+fetchStatus(true);
