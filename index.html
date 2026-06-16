@@ -14,6 +14,9 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<!-- ===== LIST VIEW ===== -->
+<div id="list-view">
 <header class="top">
   <div class="bar">
     <h1>POTC Server Monitor</h1>
@@ -31,7 +34,7 @@
       <button class="sortbtn" data-key="ccu">동접</button>
       <button class="sortbtn" data-key="fps_avg">FPS</button>
     </div>
-    <button id="refresh" class="iconbtn" title="새로고침" aria-label="새로고침"><span class="ico">↻</span></button>
+    <button id="refresh" class="iconbtn refreshbtn" title="새로고침" aria-label="새로고침"><span class="ico">↻</span></button>
   </div>
   <div class="row head">
     <span class="c-pin"></span>
@@ -42,13 +45,40 @@
     <span class="c-max">Max</span>
   </div>
 </header>
-
 <main>
   <div id="banner" class="banner" hidden></div>
   <div id="list"></div>
 </main>
-
 <footer id="foot"></footer>
+</div>
+
+<!-- ===== DETAIL VIEW ===== -->
+<div id="detail-view" hidden>
+<header class="top dtop">
+  <div class="bar">
+    <button id="back" class="iconbtn" title="뒤로" aria-label="뒤로">←</button>
+    <span class="dtitle"><span class="dot" id="d-dot"></span><b id="d-num">–</b><span id="d-name" class="d-name"></span></span>
+    <button id="refresh2" class="iconbtn refreshbtn" title="새로고침" aria-label="새로고침"><span class="ico">↻</span></button>
+  </div>
+  <div class="summary"><span id="d-updated" class="updated"></span></div>
+</header>
+<main>
+  <div id="d-banner" class="banner" hidden></div>
+  <section class="cur-grid" id="d-current"></section>
+  <section class="card">
+    <div class="card-h"><h3>CCU 추이</h3><span id="ccu-range" class="range"></span></div>
+    <div id="chart-ccu" class="chart"></div>
+  </section>
+  <section class="card">
+    <div class="card-h"><h3>FPS 추이</h3><span id="fps-range" class="range"></span></div>
+    <div id="chart-fps" class="chart"></div>
+  </section>
+  <section class="card">
+    <div class="card-h"><h3>Event Log</h3><span id="ev-cnt" class="range"></span></div>
+    <div id="d-events" class="events"></div>
+  </section>
+</main>
+</div>
 
 <script src="app.js"></script>
 </body>

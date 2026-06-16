@@ -1,8 +1,9 @@
 "use strict";
 /* POTC Server Monitor - read-only static viewer.
-   Fetches ./status.json (written by the bridge: monitor_client.py --emit), renders a
-   sortable / pinnable / filterable list. No dependencies; works on GitHub Pages or any
-   static host that serves status.json same-origin. */
+   List view fetches status.json (all servers); detail view (#s/<num>) fetches detail/<num>.json
+   (current stats + 3h CCU/FPS history + server-filtered event log), both written by the bridge
+   (monitor_client.py). On GitHub Pages it reads via the UNauthenticated GitHub contents API (no
+   token); on localhost it falls back to same-origin mock files. No dependencies. */
 
 const REFRESH_MS = 90000;          // unauthenticated GitHub API = 60 req/hr -> poll every 90s (40/hr)
 const STALE_SEC = 240;             // older than this -> flag the timestamp (bridge likely stopped)
@@ -10,13 +11,15 @@ const MIN_GAP_MS = 8000;           // min gap between event-driven refetches (on
 const PIN_KEY = "poc.pinned.v1";
 
 const state = {
-  data: null,
-  sortKey: "num",                  // num | ccu | fps
+  data: null,                      // status.json (list)
+  detail: null,                    // detail/<num>.json (detail view)
+  sortKey: "num",
   sortDir: { num: 1, ccu: -1, fps_avg: -1 },
   filter: "",
   pinned: loadPinned(),
-  fetching: false,                 // single-flight guard (no overlapping requests)
-  lastFetch: 0,                    // epoch ms of the last fetch start (debounce source)
+  fetching: false,                 // single-flight guard
+  pending: false,                  // a fetch was requested mid-flight (e.g. route change) -> re-run
+  lastFetch: 0,
 };
 
 function loadPinned() {
@@ -25,6 +28,18 @@ function loadPinned() {
 }
 function savePinned() {
   try { localStorage.setItem(PIN_KEY, JSON.stringify([...state.pinned])); } catch {}
+}
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+function fmtNum(v) { return v == null ? "–" : v.toLocaleString(); }
+function fmtMem(kb) {                                  // used_memory is ~KB on the wire (verify vs Monitor)
+  if (kb == null) return "–";
+  if (kb >= 1048576) return (kb / 1048576).toFixed(1) + " GB";
+  if (kb >= 1024) return Math.round(kb / 1024) + " MB";
+  return kb + " KB";
 }
 
 /* natural compare so "1M85" < "1M458" and digits sort numerically */
@@ -38,7 +53,6 @@ function natCmp(a, b) {
   }
   return ax.length - bx.length;
 }
-
 function cmp(a, b) {
   const k = state.sortKey, dir = state.sortDir[k];
   if (k === "num") {
@@ -49,7 +63,7 @@ function cmp(a, b) {
   const av = a[k] == null ? -1 : a[k];
   const bv = b[k] == null ? -1 : b[k];
   if (av !== bv) return (av - bv) * dir;
-  return natCmp(a.num, b.num);                 // tiebreak by number
+  return natCmp(a.num, b.num);
 }
 
 function condClass(c) {
@@ -60,8 +74,8 @@ function condClass(c) {
   return "c-off";
 }
 function fpsClass(f) { return f == null ? "" : f >= 60 ? "ok" : f >= 30 ? "warn" : "bad"; }
-function usageClass(v) { return v == null ? "" : v < 70 ? "ok" : v < 90 ? "warn" : "bad"; }  // CPU/mem %: low=good
 
+/* ---------- list view ---------- */
 function render() {
   const d = state.data;
   if (!d) return;
@@ -74,7 +88,6 @@ function render() {
   let rows = (d.servers || []).filter(s =>
     !f || (s.num || "").toLowerCase().includes(f) || (s.name || "").toLowerCase().includes(f));
   rows.sort(cmp);
-  // pinned float to top, keeping the chosen sort within each group
   const pin = rows.filter(s => state.pinned.has(s.num));
   const rest = rows.filter(s => !state.pinned.has(s.num));
 
@@ -89,18 +102,20 @@ function render() {
 function rowEl(s, pinned) {
   const el = document.createElement("div");
   el.className = "row" + (pinned ? " pinned" : "");
+  el.addEventListener("click", () => navTo(s.num));          // tap row -> detail
+
   const star = document.createElement("span");
   star.className = "c-pin" + (pinned ? " on" : "");
   star.textContent = pinned ? "★" : "☆";
   star.setAttribute("role", "button");
   star.title = "핀 고정/해제";
-  star.onclick = () => { togglePin(s.num); };
+  star.onclick = (e) => { e.stopPropagation(); togglePin(s.num); };   // don't navigate
 
   const name = document.createElement("span");
   name.className = "c-name";
   name.innerHTML = `<span class="dot ${condClass(s.condition)}"></span><span class="num"></span>`;
-  name.querySelector(".num").textContent = dispNum(s.num);   // colored status dot, then number
-  name.querySelector(".dot").title = s.condition || "?";     // hover shows full status text
+  name.querySelector(".num").textContent = dispNum(s.num);
+  name.querySelector(".dot").title = s.condition || "?";
 
   const ccu = el_span("c-ccu", s.ccu == null ? "–" : s.ccu.toLocaleString());
   const mn = el_span("c-min " + fpsClass(s.fps_min), s.fps_min == null ? "–" : s.fps_min);
@@ -111,7 +126,7 @@ function rowEl(s, pinned) {
   return el;
 }
 function el_span(cls, text) { const e = document.createElement("span"); e.className = cls; e.textContent = text; return e; }
-function dispNum(num) {                    // "1M458" -> "458", "L484" -> "484" (drop the 1M/L prefix)
+function dispNum(num) {                    // "1M458" -> "458" (drop the 1M/L prefix)
   const m = String(num || "").match(/(\d+)$/);
   return m ? m[1] : (num || "");
 }
@@ -133,57 +148,168 @@ function renderUpdated() {
   el.classList.toggle("stale", age > STALE_SEC);
 }
 
-/* Data source: the repo is PUBLIC and status.json lives on its `data` branch. The viewer reads it
-   through the UNauthenticated GitHub contents API (Accept: raw) - no token, and the API returns
-   fresh content (~60s cache) so it beats the Pages CDN's 5-min cache / 6-min rebuild. The API
-   allows 60 req/hr unauthenticated, hence the 90s poll above. On localhost it falls back to the
-   same-origin mock so `python -m http.server` previews still work. */
+/* ---------- detail view ---------- */
+function lineChart(vals, color) {
+  const W = 320, H = 96, PX = 4, PT = 10, PB = 8;
+  let mn = Infinity, mx = -Infinity, count = 0;
+  for (const v of vals) { if (v == null) continue; count++; if (v < mn) mn = v; if (v > mx) mx = v; }
+  if (count < 2) return '<div class="nochart">데이터 수집 중… (분당 1포인트)</div>';
+  if (mn === mx) { mn -= 1; mx += 1; }
+  const n = vals.length;
+  const X = i => PX + (n <= 1 ? 0 : i * (W - 2 * PX) / (n - 1));
+  const Y = v => PT + (H - PT - PB) * (1 - (v - mn) / (mx - mn));
+  let line = "", firstX = 0, lastX = 0, started = false;
+  vals.forEach((v, i) => {
+    if (v == null) return;
+    const x = X(i), y = Y(v);
+    line += (started ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+    if (!started) { firstX = x; started = true; }
+    lastX = x;
+  });
+  const area = `M${firstX.toFixed(1)} ${(H - PB).toFixed(1)} ` + line.slice(1) +
+               ` L${lastX.toFixed(1)} ${(H - PB).toFixed(1)} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" class="spark" preserveAspectRatio="none">
+    <path d="${area}" fill="${color}" opacity="0.13"/>
+    <path d="${line}" fill="none" stroke="${color}" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </svg>
+  <div class="ylab"><span>${Math.round(mx)}</span><span>${Math.round(mn)}</span></div>`;
+}
+
+function histRange(ts) {
+  if (!ts || ts.length < 2) return "";
+  const f = new Date(ts[0] * 1000), l = new Date(ts[ts.length - 1] * 1000);
+  const hm = d => ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  return hm(f) + " ~ " + hm(l);
+}
+function fmtEvTime(date) { return String(date || "").slice(5, 16); }   // "MM-DD HH:MM"
+
+function renderDetail() {
+  const d = state.detail;
+  if (!d) return;
+  document.getElementById("d-num").textContent = dispNum(d.num);
+  document.getElementById("d-name").textContent = d.name || "";
+  const c = d.current || {};
+  const dot = document.getElementById("d-dot");
+  dot.className = "dot " + condClass(c.condition);
+  dot.title = c.condition || "?";
+  renderDUpdated();
+
+  const cells = [
+    ["동접 (CCU)", fmtNum(c.ccu), c.condition || ""],
+    ["FPS", fmtNum(c.fps), `min ${c.fps_min ?? "–"} · avg ${c.fps_avg ?? "–"} · max ${c.fps_max ?? "–"}`, fpsClass(c.fps)],
+    ["CPU", "—", "서버 패치 필요", "muted"],
+    ["Used Mem", fmtMem(c.used_mem), ""],
+    ["Wait Dispatch", fmtNum(c.wait_dispatch), ""],
+    ["Dispatched", fmtNum(c.dispatched), ""],
+    ["In Packets", fmtNum(c.in_packets), ""],
+    ["Connections", fmtNum(c.connections), ""],
+  ];
+  document.getElementById("d-current").innerHTML = cells.map(([label, val, sub, cls]) =>
+    `<div class="cur"><span class="cl">${esc(label)}</span><span class="cv ${cls || ""}">${esc(val)}</span>` +
+    (sub ? `<span class="cs">${esc(sub)}</span>` : "") + `</div>`).join("");
+
+  const h = d.history || { t: [], ccu: [], fps: [] };
+  document.getElementById("chart-ccu").innerHTML = lineChart(h.ccu || [], "#5b8cff");
+  document.getElementById("chart-fps").innerHTML = lineChart(h.fps || [], "#8b7cff");
+  const rng = histRange(h.t);
+  document.getElementById("ccu-range").textContent = rng;
+  document.getElementById("fps-range").textContent = rng;
+
+  const ev = d.events || [];
+  document.getElementById("ev-cnt").textContent = ev.length ? `${ev.length}건` : "";
+  const box = document.getElementById("d-events");
+  box.innerHTML = ev.length
+    ? ev.map(e => `<div class="ev ev-${esc(e.sev)}"><span class="et">${esc(fmtEvTime(e.date))}</span>` +
+        `<span class="em">${esc(e.msg)}</span></div>`).join("")
+    : '<div class="nochart">이벤트 없음</div>';
+}
+
+function renderDUpdated() {
+  const el = document.getElementById("d-updated");
+  const d = state.detail;
+  if (!d || !el) return;
+  if (d.source === "mock") { el.textContent = "목업"; el.classList.remove("stale"); return; }
+  const age = Math.max(0, Math.floor(Date.now() / 1000 - (d.updated_epoch || 0)));
+  el.textContent = age < 60 ? `${age}초 전` : `${Math.floor(age / 60)}분 ${age % 60}초 전`;
+  el.classList.toggle("stale", age > STALE_SEC);
+}
+
+/* ---------- routing + data ---------- */
+function currentRoute() {
+  const m = (location.hash || "").match(/^#s\/(.+)$/);
+  return m ? { view: "detail", num: decodeURIComponent(m[1]) } : { view: "list" };
+}
+function navTo(num) { if (num) location.hash = "s/" + encodeURIComponent(num); }
+function showView() {
+  const r = currentRoute();
+  document.getElementById("list-view").hidden = r.view !== "list";
+  document.getElementById("detail-view").hidden = r.view !== "detail";
+}
+
 function repoInfo() {
   const m = location.hostname.match(/^([^.]+)\.github\.io$/);
   const repo = location.pathname.split("/").filter(Boolean)[0];
   return (m && repo) ? { owner: m[1], repo } : null;   // null => local preview (mock)
 }
-
-function setRefreshing(on) {
-  const btn = document.getElementById("refresh");
-  if (btn) { btn.classList.toggle("spin", on); btn.disabled = on; }
-}
-
-/* force=true  -> manual button / first load / reconnect: bypass the debounce (still single-flight).
-   force=false -> interval + resume events: skip if a fetch is in flight or one started <MIN_GAP_MS ago.
-   A single iOS resume can fire visibilitychange + pageshow + focus together; the debounce collapses
-   that burst into one request so the unauthenticated 60 req/hr budget holds. */
-async function fetchStatus(force) {
-  if (state.fetching) return;
-  if (!force && Date.now() - state.lastFetch < MIN_GAP_MS) return;
-  state.fetching = true;
-  state.lastFetch = Date.now();
-  setRefreshing(true);
+function apiUrl(file) {
   const repo = repoInfo();
-  const url = repo
-    ? `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/status.json?ref=data`
-    : "status.json?ts=" + Date.now();
-  const opts = repo
+  return repo
+    ? `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/${file}?ref=data`
+    : file + "?ts=" + Date.now();
+}
+function ghOpts() {
+  return repoInfo()
     ? { cache: "no-store", headers: { Accept: "application/vnd.github.raw" } }
     : { cache: "no-store" };
-  try {
-    const r = await fetch(url, opts);
-    if (!r.ok) {
-      if (r.status === 403 && r.headers.get("X-RateLimit-Remaining") === "0")
-        throw new Error("요청 한도 초과 — 잠시 후 자동 갱신");
-      throw new Error("HTTP " + r.status);
-    }
-    state.data = JSON.parse(await r.text());
-    document.getElementById("banner").hidden = true;
-    render();
-  } catch (e) {
-    const b = document.getElementById("banner");
-    b.hidden = false;
-    b.textContent = "데이터 로드 실패: " + e.message + " (자동 재시도 중)";
-  } finally {
-    state.fetching = false;
-    setRefreshing(false);
+}
+async function fetchJson(url) {
+  const r = await fetch(url, ghOpts());
+  if (!r.ok) {
+    if (r.status === 403 && r.headers.get("X-RateLimit-Remaining") === "0")
+      throw new Error("요청 한도 초과 — 잠시 후 자동 갱신");
+    throw new Error("HTTP " + r.status);
   }
+  return JSON.parse(await r.text());
+}
+function setBanner(id, msg) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  if (msg) { b.hidden = false; b.textContent = msg; } else { b.hidden = true; }
+}
+function setRefreshing(on) {
+  document.querySelectorAll(".refreshbtn").forEach(b => { b.classList.toggle("spin", on); b.disabled = on; });
+}
+
+/* one route-aware fetch; single-flight + debounced (the iOS resume burst collapses to one request).
+   A request that arrives mid-flight (notably a route change) sets `pending` so we re-run for the
+   current route when the in-flight fetch finishes - otherwise tapping a row during the initial
+   load would drop the detail fetch and the page would stay blank until the next poll. */
+async function activeFetch(force) {
+  if (state.fetching) { state.pending = true; return; }
+  if (!force && Date.now() - state.lastFetch < MIN_GAP_MS) return;
+  state.fetching = true;
+  setRefreshing(true);
+  do {
+    state.pending = false;
+    state.lastFetch = Date.now();
+    const r = currentRoute();
+    try {
+      if (r.view === "detail") {
+        state.detail = await fetchJson(apiUrl("detail/" + encodeURIComponent(r.num) + ".json"));
+        setBanner("d-banner", null);
+        renderDetail();
+      } else {
+        state.data = await fetchJson(apiUrl("status.json"));
+        setBanner("banner", null);
+        render();
+      }
+    } catch (e) {
+      setBanner(r.view === "detail" ? "d-banner" : "banner",
+        "데이터 로드 실패: " + e.message + " (자동 재시도 중)");
+    }
+  } while (state.pending);
+  state.fetching = false;
+  setRefreshing(false);
 }
 
 /* ---- events ---- */
@@ -196,26 +322,32 @@ document.getElementById("sorts").addEventListener("click", e => {
     b.classList.toggle("active", b.dataset.key === state.sortKey);
     b.querySelector(".dir")?.remove();
     if (b.dataset.key === state.sortKey) {
-      const d = document.createElement("span");
-      d.className = "dir";
-      d.textContent = state.sortDir[state.sortKey] > 0 ? " ▲" : " ▼";
-      b.appendChild(d);
+      const dd = document.createElement("span");
+      dd.className = "dir";
+      dd.textContent = state.sortDir[state.sortKey] > 0 ? " ▲" : " ▼";
+      b.appendChild(dd);
     }
   }
   render();
 });
 document.getElementById("filter").addEventListener("input", e => { state.filter = e.target.value; render(); });
-document.getElementById("refresh").addEventListener("click", () => fetchStatus(true));
+document.getElementById("refresh").addEventListener("click", () => activeFetch(true));
+document.getElementById("refresh2").addEventListener("click", () => activeFetch(true));
+document.getElementById("back").addEventListener("click", () => {
+  if (history.length > 1) history.back(); else location.hash = "";
+});
 
-/* Refetch on every path back to the foreground. iOS Safari freezes timers while the PWA/tab is
-   backgrounded or the phone is locked, so the 90s interval is suspended and data is stale on resume.
-   visibilitychange = tab switch / unlock, pageshow = bfcache restore (back-forward, app resume),
-   focus = window focus, online = network reconnect. MIN_GAP_MS dedupes the resume burst. */
-document.addEventListener("visibilitychange", () => { if (!document.hidden) fetchStatus(false); });
-window.addEventListener("pageshow", () => fetchStatus(false));
-window.addEventListener("focus", () => fetchStatus(false));
-window.addEventListener("online", () => fetchStatus(true));
+window.addEventListener("hashchange", () => { showView(); window.scrollTo(0, 0); activeFetch(true); });
 
-setInterval(() => fetchStatus(false), REFRESH_MS);
-setInterval(renderUpdated, 1000);
-fetchStatus(true);
+/* refetch on every path back to the foreground (iOS Safari freezes timers when backgrounded;
+   visibilitychange/pageshow/focus/online cover unlock, bfcache restore, focus, reconnect) */
+document.addEventListener("visibilitychange", () => { if (!document.hidden) activeFetch(false); });
+window.addEventListener("pageshow", () => activeFetch(false));
+window.addEventListener("focus", () => activeFetch(false));
+window.addEventListener("online", () => activeFetch(true));
+
+setInterval(() => activeFetch(false), REFRESH_MS);
+setInterval(() => { currentRoute().view === "detail" ? renderDUpdated() : renderUpdated(); }, 1000);
+
+showView();
+activeFetch(true);
