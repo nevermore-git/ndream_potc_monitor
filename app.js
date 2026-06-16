@@ -1,7 +1,7 @@
 "use strict";
 /* POTC Server Monitor - read-only static viewer.
    List view fetches status.json (all servers); detail view (#s/<num>) fetches detail/<num>.json
-   (current stats + 3h CCU/FPS history + server-filtered event log), both written by the bridge
+   (current stats + 24h CCU/FPS history + server-filtered event log), both written by the bridge
    (monitor_client.py). On GitHub Pages it reads via the UNauthenticated GitHub contents API (no
    token); on localhost it falls back to same-origin mock files. No dependencies. */
 
@@ -178,10 +178,21 @@ function lineChart(vals, color) {
 function histRange(ts) {
   if (!ts || ts.length < 2) return "";
   const f = new Date(ts[0] * 1000), l = new Date(ts[ts.length - 1] * 1000);
-  const hm = d => ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
-  return hm(f) + " ~ " + hm(l);
+  const p = n => ("0" + n).slice(-2);
+  const hm = d => p(d.getHours()) + ":" + p(d.getMinutes());
+  const md = d => p(d.getMonth() + 1) + "-" + p(d.getDate());
+  return f.toDateString() === l.toDateString()         // 24h window may span two days
+    ? hm(f) + " ~ " + hm(l)
+    : md(f) + " " + hm(f) + " ~ " + md(l) + " " + hm(l);
 }
-function fmtEvTime(date) { return String(date || "").slice(5, 16); }   // "MM-DD HH:MM"
+function fmtEvTime(e) {                                 // event timestamps are Master-UTC -> show phone-local
+  const p = n => ("0" + n).slice(-2);
+  if (e && e.ep) {
+    const d = new Date(e.ep * 1000);
+    return p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+  }
+  return String((e && e.date) || "").slice(5, 19);     // fallback (mock / unparsed): raw "MM-DD HH:MM:SS"
+}
 
 function renderDetail() {
   const d = state.detail;
@@ -219,7 +230,7 @@ function renderDetail() {
   document.getElementById("ev-cnt").textContent = ev.length ? `${ev.length}건` : "";
   const box = document.getElementById("d-events");
   box.innerHTML = ev.length
-    ? ev.map(e => `<div class="ev ev-${esc(e.sev)}"><span class="et">${esc(fmtEvTime(e.date))}</span>` +
+    ? ev.map(e => `<div class="ev ev-${esc(e.sev)}"><span class="et">${esc(fmtEvTime(e))}</span>` +
         `<span class="em">${esc(e.msg)}</span></div>`).join("")
     : '<div class="nochart">이벤트 없음</div>';
 }
