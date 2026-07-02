@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>POTC Server Monitor</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="POTC Monitor">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<!-- bump ?v= whenever styles.css / app.js change, so Safari & home-screen PWAs drop the old cached copy -->
+<link rel="stylesheet" href="styles.css?v=20260702a">
+</head>
+<body>
+
+<!-- ===== LIST VIEW ===== -->
+<div id="list-view">
+<header class="top">
+  <div class="bar">
+    <h1>POTC Server Monitor</h1>
+    <span id="src" class="src"></span>
+  </div>
+  <div id="alertbar" class="alertbar" hidden></div>
+  <div class="summary">
+    <b id="totccu">–</b><span class="lbl">CCU</span>
+    <b id="cnt">–</b><span class="lbl">Servers</span>
+    <span id="updated" class="updated"></span>
+  </div>
+  <div class="controls">
+    <input id="filter" type="search" inputmode="search" placeholder="Search" autocomplete="off">
+    <div class="sorts" id="sorts">
+      <button class="sortbtn active" data-key="num">No.</button>
+      <button class="sortbtn" data-key="ccu">CCU</button>
+      <button class="sortbtn" data-key="fps_avg">FPS</button>
+    </div>
+    <button id="refresh" class="iconbtn refreshbtn" title="Refresh" aria-label="Refresh"><span class="ico">↻</span></button>
+  </div>
+  <div class="row head">
+    <span class="c-pin"></span>
+    <span class="c-name">Server</span>
+    <span class="c-ccu">CCU</span>
+    <span class="c-min">Min</span>
+    <span class="c-avg">Avg</span>
+    <span class="c-max">Max</span>
+  </div>
+</header>
+<main>
+  <div id="banner" class="banner" hidden></div>
+  <div id="list"></div>
+</main>
+<footer id="foot"></footer>
+</div>
+
+<!-- ===== DETAIL VIEW ===== -->
+<div id="detail-view" hidden>
+<header class="top dtop">
+  <div class="bar">
+    <button id="back" class="iconbtn" title="Back" aria-label="Back">←</button>
+    <span class="dtitle"><span class="dot" id="d-dot"></span><b id="d-num">–</b><span id="d-name" class="d-name"></span></span>
+    <span id="d-updated" class="updated"></span>
+    <button id="refresh2" class="iconbtn refreshbtn" title="Refresh" aria-label="Refresh"><span class="ico">↻</span></button>
+  </div>
+</header>
+<main>
+  <div id="d-banner" class="banner" hidden></div>
+  <section class="cur-grid" id="d-current"></section>
+  <nav class="ranges" id="d-ranges" aria-label="Time range">
+    <button class="rbtn" data-r="3h">3H</button>
+    <button class="rbtn" data-r="1d">1D</button>
+    <button class="rbtn" data-r="1w">1W</button>
+    <button class="rbtn" data-r="2w">2W</button>
+    <button class="rbtn" data-r="1mo">1M</button>
+  </nav>
+  <section class="card">
+    <div class="card-h"><h3>CCU trend</h3><span id="ccu-range" class="range"></span></div>
+    <div id="chart-ccu" class="chart"></div>
+  </section>
+  <section class="card">
+    <div class="card-h"><h3>FPS trend</h3><span id="fps-range" class="range"></span></div>
+    <div id="chart-fps" class="chart"></div>
+  </section>
+  <section class="card">
+    <div class="card-h"><h3>CPU trend</h3><span id="cpu-range" class="range"></span></div>
+    <div id="chart-cpu" class="chart"></div>
+  </section>
+  <section class="card">
+    <div class="card-h"><h3>Event Log</h3><span id="ev-cnt" class="range"></span></div>
+    <div id="d-events" class="events"></div>
+  </section>
+</main>
+</div>
+
+<script src="app.js?v=20260702a"></script>
+</body>
+</html>

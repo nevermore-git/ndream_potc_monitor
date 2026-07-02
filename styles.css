@@ -1,0 +1,180 @@
+:root {
+  --bg: #0b1020;
+  --bg2: #141b30;
+  --line: #243049;
+  --fg: #e7ecf6;
+  --muted: #8b98b4;
+  --accent: #5b8cff;
+  --pin: #ffcc55;
+  --ok: #38d39f;
+  --warn: #f5b942;
+  --bad: #ff5d6c;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+body {
+  font: 15px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---- sticky header ---- */
+.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  padding: calc(env(safe-area-inset-top) + 10px) 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.bar { display: flex; align-items: baseline; gap: 8px; }
+.bar h1 { font-size: 17px; margin: 0; font-weight: 700; }
+.src {
+  font-size: 11px; color: var(--bg); background: var(--accent);
+  padding: 2px 7px; border-radius: 999px; font-weight: 700; text-transform: uppercase;
+}
+.gear { margin-left: auto; background: none; border: 0; color: var(--muted); font-size: 18px; padding: 0 4px; cursor: pointer; }
+.setup { text-align: center; color: var(--muted); padding: 40px 20px; }
+.setup button { margin-top: 12px; background: var(--accent); color: #fff; border: 0; border-radius: 9px; padding: 11px 18px; font-size: 15px; font-weight: 700; }
+.summary { margin: 8px 0; color: var(--muted); font-size: 13px; }
+.summary b { color: var(--fg); font-size: 18px; font-variant-numeric: tabular-nums; }
+.summary .lbl { margin: 0 12px 0 4px; }
+.updated { float: right; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.updated.stale { color: var(--warn); }
+
+.controls { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+#filter {
+  flex: 1; min-width: 0; background: var(--bg2); border: 1px solid var(--line);
+  color: var(--fg); border-radius: 9px; padding: 9px 11px; font-size: 14px;
+}
+.sorts { display: flex; gap: 4px; }
+.sortbtn {
+  background: var(--bg2); border: 1px solid var(--line); color: var(--muted);
+  border-radius: 9px; padding: 9px 11px; font-size: 13px; font-weight: 600;
+}
+.sortbtn.active { color: var(--fg); border-color: var(--accent); background: #1c2746; }
+.sortbtn .dir { font-size: 10px; opacity: .8; }
+.iconbtn {
+  flex: 0 0 auto; background: var(--bg2); border: 1px solid var(--line); color: var(--muted);
+  border-radius: 9px; padding: 9px 12px; font-size: 16px; line-height: 1; font-weight: 700;
+}
+.iconbtn:active { background: #1c2746; color: var(--fg); }
+.iconbtn[disabled] { opacity: .85; }
+.iconbtn .ico { display: inline-block; }
+.iconbtn.spin .ico { animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* keep the header bar / summary / controls / column-head in the same centered column as the
+   list (main, below) so the columns line up at any width instead of the header spanning full-width */
+.bar, .summary, .controls, .row.head { max-width: 720px; margin-left: auto; margin-right: auto; }
+
+/* ---- row grid (header + data share these columns) ---- */
+.row {
+  display: grid;
+  grid-template-columns: 24px 60px repeat(4, 1fr);
+  align-items: center; gap: 6px;
+  padding: 9px 12px; border-bottom: 1px solid var(--line);
+}
+.row.head { color: var(--muted); font-size: 11px; padding: 6px 12px; border: 0; }
+.row.head .c-ccu, .row.head .c-min, .row.head .c-avg, .row.head .c-max { text-align: right; }
+
+#list .row:active { background: var(--bg2); }
+.c-pin { font-size: 18px; color: #33405f; cursor: pointer; }
+.c-pin.on { color: var(--pin); }
+.c-name { min-width: 0; }
+.c-name .num { font-weight: 700; margin-left: 7px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--muted); vertical-align: middle; }
+.dot.c-open { background: var(--ok); }
+.dot.c-busy { background: var(--warn); }
+.dot.c-over { background: var(--bad); }
+.dot.c-off  { background: var(--muted); }
+.c-ccu { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.c-min, .c-avg, .c-max { text-align: right; font-variant-numeric: tabular-nums; }
+.c-min.ok, .c-avg.ok, .c-max.ok { color: var(--ok); }
+.c-min.warn, .c-avg.warn, .c-max.warn { color: var(--warn); }
+.c-min.bad, .c-avg.bad, .c-max.bad { color: var(--bad); }
+.c-cond .chip {
+  font-size: 11px; padding: 2px 7px; border-radius: 999px; font-weight: 700;
+  background: #2a3550; color: var(--muted);
+}
+.chip.c-open { background: rgba(56,211,159,.16); color: var(--ok); }
+.chip.c-busy { background: rgba(245,185,66,.16); color: var(--warn); }
+.chip.c-over { background: rgba(255,93,108,.16); color: var(--bad); }
+.chip.c-off  { background: #2a3550; color: var(--muted); }
+
+.pinned-sep { border: 0; height: 0; }
+#list .row.pinned { background: #121a30; }
+
+.banner { margin: 10px 12px; padding: 10px 12px; border-radius: 9px;
+  background: rgba(255,93,108,.12); color: var(--bad); font-size: 13px; }
+
+/* ---- anomaly alert banner (top of dashboard) ---- */
+.alertbar { max-width: 720px; margin: 8px auto;   /* share the 720px center column (matches .bar/.row.head) */
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg2); overflow: hidden; }
+.alert-h { display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 12px; font-size: 12px; font-weight: 700; color: var(--warn);
+  background: rgba(245,185,66,.12); }
+.alert-clear { background: none; border: 0; color: var(--muted); font-size: 12px;
+  cursor: pointer; padding: 2px 4px; }
+.alert-clear:active { color: var(--fg); }
+.alert { display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  font-size: 13px; border-top: 1px solid var(--line); }
+.alert .atext { flex: 1; min-width: 0; }
+.alert-warn .atext { color: var(--warn); }
+.alert-err .atext { color: var(--bad); }
+.alert-ok .atext { color: var(--ok); }   /* recovered FPS dip / maintenance ended — lingers briefly so the phone can catch it */
+.alert-info .atext { color: var(--accent); }   /* maintenance started (informational, not an anomaly) */
+.adismiss { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--muted);
+  font-size: 15px; line-height: 1; cursor: pointer; }
+.adismiss:active { background: #1c2746; color: var(--ok); }
+
+#foot { color: var(--muted); font-size: 11px; text-align: center; padding: 16px; }
+
+/* ---- detail view ---- */
+.dtop .bar { align-items: center; gap: 10px; }
+.dtop #back { font-size: 18px; padding: 6px 11px; }
+.dtitle { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1; }
+.dtitle b { font-size: 18px; }
+.dtitle .d-name { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dtop .summary { margin: 6px 0 0; }
+
+main { max-width: 720px; margin: 0 auto; }
+
+/* width:100% is load-bearing: a block-level grid with all-`fr` columns shrink-wraps to its
+   content (≈100px) instead of stretching when the parent's width comes from max-width — so on
+   a wide desktop window the cards collapsed while the (block) chart cards filled normally.
+   The list's .row grid escapes this only because it has fixed 24px/60px tracks. */
+.cur-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; width: 100%; }
+.cur { background: var(--bg2); border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; min-width: 0; }
+.cur .cl { display: block; font-size: 11px; color: var(--muted); }
+.cur .cv { display: block; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.cur .cv.ok { color: var(--ok); } .cur .cv.warn { color: var(--warn); } .cur .cv.bad { color: var(--bad); }
+.cur .cv.muted { color: var(--muted); font-weight: 600; }
+.cur .cs { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* range selector — controls CCU trend / FPS trend / Event Log window */
+.ranges { display: flex; gap: 6px; padding: 4px 12px 0; }
+.rbtn { flex: 1; background: var(--bg2); border: 1px solid var(--line); color: var(--muted);
+  border-radius: 9px; padding: 8px 0; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; }
+.rbtn.active { color: var(--fg); border-color: var(--accent); background: #1c2746; }
+
+.card { margin: 12px; background: var(--bg2); border: 1px solid var(--line); border-radius: 13px; padding: 12px; }
+.card-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.card-h h3 { margin: 0; font-size: 14px; font-weight: 700; }
+.card-h .range { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chart { position: relative; }
+.spark { width: 100%; height: 120px; display: block; }
+.spark .daygrid { stroke: var(--muted); opacity: .3; stroke-width: 1; stroke-dasharray: 2 3; }   /* UTC-midnight markers */
+.spark .maintband { fill: var(--warn); opacity: .13; }   /* 점검 window shading behind the trend line */
+.ylab { position: absolute; right: 4px; top: 2px; bottom: 2px; display: flex; flex-direction: column;
+  justify-content: space-between; align-items: flex-end; font-size: 10px; color: var(--muted);
+  pointer-events: none; font-variant-numeric: tabular-nums; }
+.nochart { color: var(--muted); font-size: 12px; text-align: center; padding: 26px 0; }
+
+.events { max-height: 60vh; overflow: auto; -webkit-overflow-scrolling: touch; }
+.ev { display: flex; gap: 9px; padding: 7px 6px 7px 9px; border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent; font-size: 12px; }
+.ev .et { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ev .em { flex: 1; min-width: 0; word-break: break-word; }
+.ev-err { border-left-color: var(--bad); } .ev-err .em { color: #ffb3ba; }
+.ev-warn { border-left-color: var(--warn); }
+.ev-ok { border-left-color: var(--accent); }
+.ev-info { border-left-color: #2a3550; }
